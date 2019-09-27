@@ -1,3 +1,4 @@
+#include <limits.h>
 #include "bigint.h"
 
 /* Atribuição (com extensão) */
@@ -36,13 +37,22 @@ void big_comp2(BigInt res, BigInt a)
 /* res = a + b */
 void big_sum(BigInt res, BigInt a, BigInt b)
 {
-
+    int i, curr, old=0;
+    for(i=0; i < (NUM_BITS/8); i++) {
+        if ((a[i]+b[i] > CHAR_MAX))
+            curr = 1;
+        res[i] = a[i]+b[i];
+        res[i]+=old;
+        old = curr;
+    }
 }
 
 /* res = a - b */
 void big_sub(BigInt res, BigInt a, BigInt b)
 {
-
+    BigInt comp;
+    big_comp2(comp, b); 
+    big_sum(res, a, comp);
 }
 
 /* res = a * b */
