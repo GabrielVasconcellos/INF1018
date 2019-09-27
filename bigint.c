@@ -3,7 +3,7 @@
 /* Atribuição (com extensão) */
 void big_val (BigInt res, long val)
 {
-
+    printf();
 }
 
 /* Operações Aritméticas */
