@@ -3,15 +3,34 @@
 /* Atribuição (com extensão) */
 void big_val (BigInt res, long val)
 {
-
+    int i;
+    int sig = (val >> ((sizeof(val)*8)-1)) & 0x1;
+    char *walker = (char*)&val;
+    for (i = 0;  i < (NUM_BITS/8); i++) {
+        if (i < sizeof(val)) { //coloca o valor de val em res
+            res[i] = *walker;
+            walker++;
+        } else if(sig) //se o numero for negativo completa os bits do vetor com 1
+            res[i] = 0xff;
+        else //se o numero for positivo completa os bits do vetor com 0
+            res[i] = 0;
+        
+    }
 }
-
 /* Operações Aritméticas */
 
 /* res = -a */
 void big_comp2(BigInt res, BigInt a)
 {
-
+    int i, last, diff = 1;
+    for (i=0; i < (NUM_BITS/8); i++) {
+        res[i] = ~a[i];
+        if(diff) {
+        last = (res[i] >> 7) & 0x1;
+        res[i]+=diff;
+        diff = last ^ ((res[i] >> 7) & 0x1);
+        }
+    }
 }
 
 /* res = a + b */
