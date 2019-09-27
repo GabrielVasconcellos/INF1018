@@ -11,7 +11,7 @@ void big_val (BigInt res, long val)
 /* res = -a */
 void big_comp2(BigInt res, BigInt a)
 {
-
+	printf("hello");
 }
 
 /* res = a + b */
