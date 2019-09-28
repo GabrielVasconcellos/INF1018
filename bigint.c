@@ -75,11 +75,11 @@ void big_shl(BigInt res, BigInt a, int n)
     }
 
     for (int i = 0; i < n; i++)
-    {
+    {      
         msb1 = res[i/8] >> 7; //Getting the most significant bit
 
         res[i/8] = res[i/8] << 1;
-        
+
         for (int j = i/8 + 1; j < NUM_BITS/8; j++) //Shifting the other elements 
         {   
             msb2 = res[j] >> 7; //Getting the most significant bit
@@ -107,30 +107,15 @@ void big_shr(BigInt res, BigInt a, int n)
 
     for (int i = 0; i < n; i++)
     {
-        lsb1 = res[(NUM_BITS - i)/8] << 7; //Getting the least significant byte
+        lsb1 = 0; //Resetting lsb1 value
 
-        printf("%02x\n", lsb1);
-        printf("res[%d] = %02x\n", (NUM_BITS - i)/8, res[(NUM_BITS - i)/8]);
-
-        res[(NUM_BITS - i)/8] = res[(NUM_BITS - i)/8] >> 1;
-
-        printf("res[%d] = %02x\n", (NUM_BITS - i)/8, res[(NUM_BITS - i)/8]);
-        
-        for (int j = (NUM_BITS - i)/8 + 1; j < NUM_BITS/8; j++) //Shifting the other elements 
+        for (int j = (NUM_BITS/8) - 1; j >= 0; j--)
         {   
             lsb2 = res[j] << 7; //Getting the least significant bit
 
-            printf("%02x\n", lsb2);
-
-            printf("res[%d] = %02x\n", j, res[j]);
-
             res[j] = res[j] >> 1;
-
-            printf("res[%d] = %02x\n", j, res[j]);
  
             res[j] |= lsb1; //Setting the least significant bit to lsb1
-
-            printf("res[%d] = %02x\n", j, res[j]);
 
             lsb1 = lsb2;
         }
@@ -141,10 +126,21 @@ void big_shr(BigInt res, BigInt a, int n)
 /* res = a >> n (aritmético)*/
 void big_sar(BigInt res, BigInt a, int n)
 {
-    if(n == 0)
-        res = a;
-    for(int i = 0; i < n; i++)
+    unsigned char aux = 0x80;
+
+    big_shr(res, a, n);
+
+    if((a[NUM_BITS/8 - 1] >> 7) & 0x01)
     {
-        
+        for(int i = 0; i < n; i++)
+        {
+            res[(NUM_BITS - i - 1)/8] |=  aux;
+            aux >>= 1;
+
+            if(!aux)
+            {
+                aux = 0x80;
+            }
+        }
     }
 }
