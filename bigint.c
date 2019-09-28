@@ -5,7 +5,7 @@
 void big_val (BigInt res, long val)
 {
     int i;
-    int sig = (val >> ((sizeof(val)*8)-1)) & 0x1;
+    int sig = (val >> ((sizeof(val)*8)-1)) & 0x1; //pega o bit mais significativo de val
     char *walker = (char*)&val;
     for (i = 0;  i < (NUM_BITS/8); i++) {
         if (i < sizeof(val)) { //coloca o valor de val em res
@@ -39,10 +39,9 @@ void big_sum(BigInt res, BigInt a, BigInt b)
 {
     int i, curr, old=0;
     for(i=0; i < (NUM_BITS/8); i++) {
-        if ((a[i]+b[i] > CHAR_MAX))
+        if ((a[i]+b[i] > UCHAR_MAX))
             curr = 1;
-        res[i] = a[i]+b[i];
-        res[i]+=old;
+        res[i] = a[i]+b[i]+old;
         old = curr;
     }
 }
