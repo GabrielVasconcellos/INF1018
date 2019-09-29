@@ -55,15 +55,13 @@ void big_sum(BigInt res, BigInt a, BigInt b)
 /* res = a + b */
 void big_sum(BigInt res, BigInt a, BigInt b)
 {
-    int i, curr, old=0;
+    int i;
+    unsigned int curr=0;
     for(i=0; i < (NUM_BITS/8); i++)
     {
-        if ((a[i]+b[i] > UCHAR_MAX))
-            curr = 1;
-        else
-            curr = 0;
-        res[i] = a[i]+b[i]+old;
-        old = curr;
+        curr += a[i]+b[i];
+        res[i] = curr & 0xff;
+        curr >>= 8;
     }
 }
 
