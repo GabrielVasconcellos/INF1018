@@ -5,7 +5,7 @@
 #include "bigint.h"
 
 
-/* Funcão Auxiliar */
+/* Funções Auxiliares */
 
 int big_isZero(BigInt a) 
 {
@@ -16,6 +16,12 @@ int big_isZero(BigInt a)
             return 0;
     }
     return 1;
+}
+
+void big_copy(BigInt res, BigInt a) {
+    int i;
+    for (i=0; i < NUM_BITS/8; i++)
+        res[i] = a[i];
 }
 
 /* Atribuição (com extensão) */
@@ -79,6 +85,9 @@ void big_sub(BigInt res, BigInt a, BigInt b)
 /* res = a * b */
 void big_mul(BigInt res, BigInt a, BigInt b)
 {
+    BigInt funcA;
+    BigInt funcB;
+    big_val(funcA,)
     big_val(res, 0);  // initialize result
     int sig = 0;
     if ((a[(NUM_BITS/8)-1] >> 7) & 0x1)
