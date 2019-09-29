@@ -1,6 +1,5 @@
 #include <limits.h>
 #include "bigint.h"
-#include <stdio.h>
 
 /* Atribuição (com extensão) */
 void big_val (BigInt res, long val)
