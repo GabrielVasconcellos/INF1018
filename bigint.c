@@ -1,7 +1,22 @@
 /* Bernardo Rezende 1811441 3WA */
 /* Gabriel Luiz Vasconcellos 1810542 3WA */
+
 #include <limits.h>
 #include "bigint.h"
+
+
+/* Funcão Auxiliar */
+
+int big_isZero(BigInt a) 
+{
+    int i;
+    for (i=0; i < (NUM_BITS/8) - 1; i++)
+    {
+        if (a[i] != 0)
+            return 0;
+    }
+    return 1;
+}
 
 /* Atribuição (com extensão) */
 void big_val (BigInt res, long val)
@@ -24,40 +39,28 @@ void big_val (BigInt res, long val)
     }
 }
 
-/* Funcão Auxiliar */
-
-int big_isZero(BigInt a) 
-{
-    int i;
-    for (i=0; i < (NUM_BITS/8) - 1; i++)
-    {
-        if (a[i] != 0)
-            return 0;
-    }
-    return 1;
-}
-
 /* Operações Aritméticas */
 
 /* res = -a */
-void big_sum(BigInt res, BigInt a, BigInt b)
+void big_comp2(BigInt res, BigInt a)
 {
-    int i;
-    unsigned int curr=0;
-    for(i=0; i < (NUM_BITS/8); i++)
-    {
-        curr += a[i]+b[i];
-        res[i] = curr & 0xff;
-        curr >>= 8;
+
+    int i, last, diff = 1;
+    for (i=0; i < (NUM_BITS/8); i++) {
+        res[i] = ~a[i];
+        if(diff) {
+        last = (res[i] >> 7) & 0x1;
+        res[i]+=diff;
+        diff = last ^ ((res[i] >> 7) & 0x1);
+        }
     }
 }
 
 /* res = a + b */
 void big_sum(BigInt res, BigInt a, BigInt b)
 {
-    int i;
     unsigned int curr=0;
-    for(i=0; i < (NUM_BITS/8); i++)
+    for(int i = 0; i < (NUM_BITS/8); i++)
     {
         curr += a[i]+b[i];
         res[i] = curr & 0xff;
@@ -108,17 +111,20 @@ void big_shl(BigInt res, BigInt a, int n)
 {   
     unsigned char msb1;
     unsigned char msb2;
-    for (int i = 0; i < NUM_BITS/8; i ++) //Setting up res
+
+    for (int i = 0; i < NUM_BITS/8; i ++)
         res[i] = a[i];
+
     for (int i = 0; i < n; i++)
     {      
-        msb1 = res[i/8] >> 7; //Getting the most significant bit
+        msb1 = res[i/8] >> 7; //Armazenando o bit mais significativo
         res[i/8] = res[i/8] << 1;
-        for (int j = i/8 + 1; j < NUM_BITS/8; j++) //Shifting the other elements 
+
+        for (int j = i/8 + 1; j < NUM_BITS/8; j++) //Deslocando os outros elementos
         {   
-            msb2 = res[j] >> 7; //Getting the most significant bit
+            msb2 = res[j] >> 7; //Armazenando o bit mais significativo
             res[j] = res[j] << 1;
-            res[j] |= msb1; //Setting the least significant bit to msb1
+            res[j] |= msb1; //Trocando o bit menos significativo por msb1
             msb1 = msb2;
         }
     }
@@ -130,18 +136,21 @@ void big_shr(BigInt res, BigInt a, int n)
     unsigned char lsb1;
     unsigned char lsb2;
 
-    for(int i = 0; i < NUM_BITS/8; i ++) //Setting up res
+    for(int i = 0; i < NUM_BITS/8; i ++)
         res[i] = a[i];
 
-    for (int i = 0; i < n; i++)
+    for (int i = 1; i < n + 1; i++)
     {
-        lsb1 = 0; //Resetting lsb1 value
-        for (int j = (NUM_BITS/8) - 1; j >= 0; j--)
+        
+        lsb1 = res[(NUM_BITS - i)/8] << 7; //Armazenando o bit menos significativo
+        res[(NUM_BITS - i)/8] = res[(NUM_BITS - i)/8] >> 1;
+
+        for (int j = (NUM_BITS - i - 8)/8; j >= 0; j--)
         {   
-            lsb2 = res[j] << 7; //Getting the least significant bit
+            lsb2 = res[j] << 7; //Armazenando o bit menos significativo
             res[j] = res[j] >> 1;
-            res[j] |= lsb1; //Setting the least significant bit to lsb1
-            lsb1 = lsb2;
+            res[j] |= lsb1; //Trocando o bit mais significativo por lsb1
+            lsb1 = lsb2;   
         }
     }
 }
@@ -149,16 +158,26 @@ void big_shr(BigInt res, BigInt a, int n)
 /* res = a >> n (aritmético)*/
 void big_sar(BigInt res, BigInt a, int n)
 {
-    unsigned char aux = 0x80;
-    big_shr(res, a, n);
-    if((a[NUM_BITS/8 - 1] >> 7) & 0x01)
+    char lsb1;
+    char lsb2;
+    char aux; //Para fazer o shift aritmético
+
+    for(int i = 0; i < NUM_BITS/8; i ++)
+        res[i] = a[i];
+
+    for (int i = 1; i < n + 1; i++)
     {
-        for(int i = 0; i < n; i++)
-        {
-            res[(NUM_BITS - i - 1)/8] |=  aux;
-            aux >>= 1;
-            if(!aux)
-                aux = 0x80;
+        lsb1 = res[(NUM_BITS - i)/8] << 7; //Armazenando o bit menos significativo
+        aux = res[(NUM_BITS - i)/8];
+        res[(NUM_BITS - i)/8] = aux >> 1;
+
+        for (int j = (NUM_BITS - i - 8)/8; j >= 0; j--)
+        {   
+            lsb2 = res[j] << 7; //Armazenando o bit menos significativo
+            aux = res[j];
+            res[j] = res[j] >> 1;
+            res[j] |= lsb1; //Trocando o bit mais significativo por lsb1
+            lsb1 = lsb2;
         }
     }
 }
