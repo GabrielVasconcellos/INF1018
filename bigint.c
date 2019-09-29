@@ -1,3 +1,5 @@
+/* Bernardo Rezende 1811441 3WA */
+/* Gabriel Luiz Vasconcellos 1810542 3WA */
 #include <limits.h>
 #include "bigint.h"
 
@@ -38,17 +40,15 @@ int big_isZero(BigInt a)
 /* Operações Aritméticas */
 
 /* res = -a */
-void big_comp2(BigInt res, BigInt a)
+void big_sum(BigInt res, BigInt a, BigInt b)
 {
-    int i, last, diff = 1;
-    for (i=0; i < (NUM_BITS/8); i++)
+    int i;
+    unsigned int curr=0;
+    for(i=0; i < (NUM_BITS/8); i++)
     {
-        res[i] = ~a[i];
-        if(diff) {
-        last = (res[i] >> 7) & 0x1;
-        res[i]+=diff;
-        diff = last ^ ((res[i] >> 7) & 0x1);
-        }
+        curr += a[i]+b[i];
+        res[i] = curr & 0xff;
+        curr >>= 8;
     }
 }
 
