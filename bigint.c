@@ -134,8 +134,15 @@ void big_shl(BigInt res, BigInt a, int n)
     unsigned char msb1;
     unsigned char msb2;
 
+    if (n >= NUM_BITS) /* Se o número de shift for maior ou igual ao tamanho do vetor, resultará em 0 */
+    {
+        big_val(res, 0);
+        return;
+    }
+
     big_copy(res, a);
-    if (n >= NUM_BITS)
+
+    if(n <= 0) /* Não realizar shifts para valores iguais ou menores que 0 */
         return;
 
     for (int i = 0; i < n; i++)
@@ -143,7 +150,7 @@ void big_shl(BigInt res, BigInt a, int n)
         msb1 = res[i/8] >> 7; /* Armazenando o bit mais significativo */
         res[i/8] = res[i/8] << 1;
 
-        for (int j = i/8 + 1; j < NUM_BITS/8; j++) /* Deslocando os outros elementos */
+        for (int j = i/8 + 1; j < NUM_BITS/8; j++) /* Deslocando os outros elementos, utiliza-se i/8 para evitar shift em elementos que ja tiveram todos seus bits preenchidos pelo shift */
         {   
             msb2 = res[j] >> 7; /* Armazenando o bit mais significativo */
             res[j] = res[j] << 1;
@@ -159,15 +166,22 @@ void big_shr(BigInt res, BigInt a, int n)
     unsigned char lsb1;
     unsigned char lsb2;
 
+    if (n >= NUM_BITS) /* Se o número de shift for maior ou igual ao tamanho do vetor, resultará em 0 */
+    {
+        big_val(res, 0);
+        return;
+    }
+
     big_copy(res, a);
-    if (n >= NUM_BITS)
+
+    if(n <= 0) /* Não realizar shifts para valores iguais ou menores que 0 */
         return;
 
     for (int i = 0; i < n; i++)
     {
-        lsb1 = 0;
+        lsb1 = 0; /* Reatribuindo o valor inicial de lsb1, ja que o bit do ultimo elemento não interfere no primeiro */
 
-        for (int j = ((NUM_BITS - 8 )/8)-i/8; j >= 0; j--)
+        for (int j = ((NUM_BITS - 8 )/8)-i/8; j >= 0; j--) /* Utiliza-se i/8 para evitar shift em elementos que ja tiveram todos seus bits preenchidos pelo shift */
         {   
             lsb2 = res[j] << 7; /* Armazenando o bit menos significativo */
             res[j] = res[j] >> 1;
@@ -183,18 +197,29 @@ void big_sar(BigInt res, BigInt a, int n)
     unsigned char lsb1;
     unsigned char lsb2;
 
+    if (n >= NUM_BITS) /* Se o número de shift for maior ou igual ao tamanho do vetor */
+    {
+        if(a[NUM_BITS/8 - 1] >> 7) /* Se o número for negativo, resultará em -1 */
+            big_val(res, -1);
+        else /* Se o número for positivo, resultará em 0 */
+            big_val(res, 0);
+        return;
+    }
+
     big_copy(res, a);
-    if (n >= NUM_BITS)
+
+    if(n <= 0) /* Não realizar shifts para valores iguais ou menores que 0 */
         return;
 
     for (int i = 0; i < n; i++)
     {
-        lsb1 = 0;
+        lsb1 = 0; /* Reatribuindo o valor inicial de lsb1, ja que o bit do ultimo elemento não interfere no primeiro */
         
-        for (int j = (NUM_BITS  -8 -i)/8; j >= 0; j--)
+        for (int j = ((NUM_BITS - 8 - i)/8); j >= 0; j--) /* Utiliza-se i/8 para evitar shift em elementos que ja tiveram todos seus bits preenchidos pelo shift */
         {   
             lsb2 = res[j] << 7; /* Armazenando o bit menos significativo */
-            if (j == (NUM_BITS  -8 -i)/8)
+
+            if (j == ((NUM_BITS  - 8 - i)/8)) /* Utilizar o shift aritmético somente no primeiro elemento */
                 res[j] = (signed char) res[j] >> 1;
             else
                 res[j] >>= 1; 
