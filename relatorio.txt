@@ -1,0 +1,129 @@
+Bernardo Rezende 1811441 3WA
+Gabriel Luiz Vasconcellos 1810542 3WA
+
+Para fim de prova real, foi usado um script em python que gera números aleatórios positivos e negativos, posteriormente foram realizadas as mesmas operações propostas no trabalho. Por fim, comparou-se os resultados obtidos no script com os mesmos feitos em C e contantou-se que eram iguais.
+
+Valores testados:
+
+Atribuição:
+
+big_val(a, -1);		-> a = 0xffffffffffffffffffffffffffffffff	
+
+big_val(a, 0);		-> a = 0x00000000000000000000000000000000	
+
+big_val(a, LONG_MAX);	-> a = 0x00000000000000007fffffffffffffff 
+
+big_val(a, LONG_MIN);	-> a = 0xffffffffffffffff8000000000000000 
+
+big_val(a, 257);	-> a = 0x00000000000000000000000000000101 
+
+
+
+Complemento a dois:
+
+big_val(a, -1);
+big_comp2(b, a);	-> b = 0x00000000000000000000000000000001 
+
+big_val(a, 0);
+big_comp2(b, a);	-> b = 0x00000000000000000000000000000000
+
+big_val(a, LONG_MAX);
+big_comp2(b, a);	-> b = 0xffffffffffffffff8000000000000001
+
+big_val(a, LONG_MIN);
+big_comp2(b, a);	-> b = 0x00000000000000008000000000000000
+
+big_val(a, 257);
+big_comp2(b, a);	-> b = 0xfffffffffffffffffffffffffffffeff
+
+
+
+Soma:
+
+big_val(a, LONG_MAX);
+big_val(b, LONG_MIN);
+big_sum(c, a, b);	-> c = 0xffffffffffffffffffffffffffffffff
+
+big_val(a, LONG_MIN);
+big_val(b, -1);
+big_sum(c, a, b);	-> c = 0xffffffffffffffff7fffffffffffffff
+
+big_val(a, LONG_MAX);
+big_val(b, LONG_MAX);
+big_sum(c, a, b);	-> c = 0000000000000000fffffffffffffffe
+
+
+
+Subtração:
+
+big_val(a, LONG_MAX);
+big_val(b, LONG_MAX);
+big_sub(c, a, b);	-> c = 0x00000000000000000000000000000000
+
+big_val(a, ULONG_MAX);
+big_val(b, LONG_MAX);
+big_sub(c, a, b);	-> c = 0xffffffffffffffff8000000000000000
+
+
+
+Multiplicação:
+
+big_val(a, LONG_MAX);
+big_val(b, LONG_MAX);
+big_mul(c, a, b);	-> c = 0x3fffffffffffffff0000000000000001
+
+big_val(a, 1);
+big_val(b, -1);
+big_mul(c, a, b);	-> c = 0xffffffffffffffffffffffffffffffff
+
+big_val(a, 198371928371);
+big_val(b, 17361928376);
+big_mul(c, a, b);	-> c = 0x00000000000000bab4c16fc1fee19ca8
+
+big_val(a, -198371928371);
+big_val(b, 17361928376);
+big_mul(c, a, b);	-> c = 0xffffffffffffff454b3e903e011e6358
+
+
+
+Shift left:
+
+big_val(a, 0xff);
+big_shl(b, a, 8);	-> b = 0x0000000000000000000000000000ff00
+
+big_val(a, 0xff);
+big_shl(b, a, 128);	-> b = 0x00000000000000000000000000000000
+
+big_val(a, 0xffff);
+big_shl(b, a, 124);	-> b = 0xf0000000000000000000000000000000
+
+
+
+Shift right (lógico):
+
+big_val(a, -1);
+big_shr(b, a, 8);	-> b = 0x00ffffffffffffffffffffffffffffff 
+
+big_val(a, -1);
+big_shr(b, a, 128);	-> b = 0x00000000000000000000000000000000
+
+big_val(a, -1);
+big_shr(b, a, 62);	-> b = 0x0000000000000003ffffffffffffffff
+
+
+
+Shift right (aritmético):
+
+big_val(a, -1);
+big_sar(b, a, 8);	-> b = 0xffffffffffffffffffffffffffffffff
+
+big_val(a, -1);
+big_sar(b, a, 128);	-> b = 0xffffffffffffffffffffffffffffffff
+
+big_val(a, -11231231541);
+big_sar(b, a, 12);	-> b = 0xffffffffffffffffffffffffffd62910
+
+big_val(a, LONG_MAX);
+big_sar(b, a, 12);	-> b = 0x00000000000000000007ffffffffffff
+
+
