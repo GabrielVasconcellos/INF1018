@@ -21,9 +21,10 @@ unsigned char* insertCode(unsigned char *codigo, char *s)
     return codigo;
 }
 
-void hex2string (char *string, void *p, int n)
+void bin2hstring (char *string, void *p, int n) 
 {
     unsigned char *p1 = p;
+    
     while (n--)
     {
         snprintf(string, 3, "%02x", *p1);
@@ -147,7 +148,7 @@ void* cria_func (void* f, DescParam params[], int n)
                                 codigo = insertCode(codigo, "ba");
                                 break;
                         }
-                        hex2string(string,(void *) &params[i].valor.v_int, sizeof(int));
+                        bin2hstring(string,(void *) &params[i].valor.v_int, sizeof(int));
                         break;
                     case PTR_PAR:
                         switch (arg)
@@ -162,14 +163,14 @@ void* cria_func (void* f, DescParam params[], int n)
                                 codigo = insertCode(codigo, "48ba");
                                 break;
                         }
-                        hex2string(string,(void *) &params[i].valor.v_ptr, sizeof(int *));
+                        bin2hstring(string,(void *) &params[i].valor.v_ptr, sizeof(int *));
                         break;
                 }
                 codigo = insertCode(codigo, string);
                 break;
             case IND:
                 codigo = insertCode(codigo, "48b9");
-                hex2string(string,(void *) &params[i].valor.v_ptr, sizeof(int *));
+                bin2hstring(string,(void *) &params[i].valor.v_ptr, sizeof(int *));
                 codigo = insertCode(codigo, string);
                 switch(params[i].tipo_val)
                 {
@@ -207,7 +208,7 @@ void* cria_func (void* f, DescParam params[], int n)
     }
 
     codigo = insertCode(codigo, "48b9");
-    hex2string(string, &f, sizeof(void *));
+    bin2hstring(string, &f, sizeof(void *));
     codigo = insertCode(codigo, string);
     codigo = insertCode(codigo, "ffd1c9c3");
 
