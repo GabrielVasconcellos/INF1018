@@ -1,3 +1,5 @@
+/*  Bernardo Florindo Mortari Rezende 	1811441 	3WA
+    Gabriel Luiz Neves de Vasconcellos 	1810542 	3WA */
 #include <stdio.h>
 #include <stdlib.h>
 #include "cria_func.h"
