@@ -59,7 +59,7 @@ void* cria_func (void* f, DescParam params[], int n)
         printf("malloc error\n");
         exit(1);
     }
-
+    /* coloca os valores de rdi, rsi e rdx na stack */
     codigo = insertCode(codigo, "554889e54883ec2048897c24e048897424e848895424f0");
     
     for(int i = 0; i < n; i++, arg++)
@@ -67,6 +67,7 @@ void* cria_func (void* f, DescParam params[], int n)
         switch (params[i].orig_val)
         {
             case PARAM:
+            /* retira o conteudo da stack e coloca no registrador necessário */
                 switch(params[i].tipo_val)
                 {
                     case INT_PAR:
@@ -147,6 +148,7 @@ void* cria_func (void* f, DescParam params[], int n)
                 f_arg++;
                 break;
             case FIX:
+            /* transforma o valor para hexadecimal usando bin2hstring e o coloca no registrador necessário */
                 switch(params[i].tipo_val)
                 {
                     case INT_PAR:
@@ -183,6 +185,7 @@ void* cria_func (void* f, DescParam params[], int n)
                 codigo = insertCode(codigo, string);
                 break;
             case IND:
+            /* transforma o valor em hexadecimal através de bin2hstring e o deferencia colocando no registrador necessário */
                 codigo = insertCode(codigo, "48b9");
                 bin2hstring(string,(void *) &params[i].valor.v_ptr, sizeof(int *));
                 codigo = insertCode(codigo, string);
@@ -220,7 +223,7 @@ void* cria_func (void* f, DescParam params[], int n)
                 break;
         }
     }
-
+    /* call da função original junto com leave e ret */
     codigo = insertCode(codigo, "48b9");
     bin2hstring(string, &f, sizeof(void *));
     codigo = insertCode(codigo, string);
