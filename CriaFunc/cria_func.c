@@ -37,11 +37,23 @@ void bin2hstring (char *string, void *p, int n)
 
 void* cria_func (void* f, DescParam params[], int n)
 {
-    unsigned char *codigo =(unsigned char *) malloc(sizeof(unsigned char) * 100);
-    unsigned char *start = codigo;
+    unsigned char *codigo;
+    unsigned char *start;
     char string[17];
     reg arg = RDI;
     reg f_arg = RDI;
+    if (n < 1)
+    {
+        printf("Erro: Número mínimo de parâmetros: 1\n");
+        exit(1);
+    }
+    else if (n > 3)
+    {
+        printf("Error: Número máximo de parâmetros: 3\n");
+        exit(1);
+    }
+    codigo = (unsigned char *) malloc(sizeof(unsigned char) * 100);
+    start = codigo;
     if (codigo == NULL)
     {
         printf("malloc error\n");
