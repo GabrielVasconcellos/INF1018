@@ -175,7 +175,7 @@ void printa_multArray (int **multArray, int n)
   for (i = 0; i < n; i++)
   {
     for (j = 0; j < n; j++)
-      printf("%d", multArray[i][j]);
+      printf("%d\t", multArray[i][j]);
     printf("\n");
   }
   printf("\n");
