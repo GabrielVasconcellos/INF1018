@@ -16,7 +16,7 @@ O programa CriaFunc possui as seguintes funcionalidades testadas:
 Foram utilizados exemplos do site e alguns criados por nós.
 
 Exemplos de uso:
-Exemplo 1(Inclue as funcionalidades [1.1] e [2.1]):
+Exemplo 1(inclui as funcionalidades [1.1] e [2.1]):
 
 #include <stdio.h>
 #include "cria_func.h"
@@ -61,7 +61,7 @@ Output 1:
 90
 100
 
-Exemplo 2(Inclue as funcionalides [2.1] e [2.3]):
+Exemplo 2(inclui as funcionalides [2.1] e [2.3]):
 
 #include <stdio.h>
 #include "cria_func.h"
@@ -107,7 +107,7 @@ Output 2:
 90
 100
 
-Exemplo 3(Inclue as funcionalidades [1.1], [1.2] e [2.2]):
+Exemplo 3(inclui as funcionalidades [1.1], [1.2] e [2.2]):
 
 #include <stdio.h>
 #include <string.h>
@@ -137,7 +137,7 @@ int main (void) {
 
   tam = 12;
   printf ("'%s' tem mesmo prefixo-%d de '%s'? %s\n", s, tam, fixa, mesmo_prefixo (s, tam)?"NAO":"SIM");
-  tam = strlen(uma);
+  tam = strlen(s);
   printf ("'%s' tem mesmo prefixo-%d de '%s'? %s\n", s, tam, fixa, mesmo_prefixo (s, tam)?"NAO":"SIM");
 
   libera_func(mesmo_prefixo);
@@ -146,3 +146,113 @@ int main (void) {
 
 Output 3:
 
+'quero saber tudo' tem mesmo prefixo-12 de 'quero saber se a outra string é um prefixo dessa'? SIM
+'quero saber tudo' tem mesmo prefixo-16 de 'quero saber se a outra string é um prefixo dessa'? NAO
+
+Exemplo 4(inclui as funcionalidades [1.1], [2.3] e [2.4]):
+
+Multiplica o array contido no ponteiro duplo amarrado "multArray" pelo valor da variável amarrada "mult"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "cria_func.h"
+#define NULLCHECK(x); if (x == NULL) exit(1);
+#define TAM 10
+
+typedef void (*func_ptr) (int);
+
+void mult_array (int **array, int mult, int n)
+{
+  int i, *inc = *array;
+
+  for (i = 0; i < n; i++)
+    inc[i] *= mult;
+}
+
+void printa_multArray (int **multArray, int n)
+{
+  int i, j;
+  for (i = 0; i < n; i++)
+  {
+    for (j = 0; j < n; j++)
+      printf("%d", multArray[i][j]);
+    printf("\n");
+  }
+  printf("\n");
+}
+
+int **make_multArray(int n)
+{
+  int i, j;
+  int **mat = malloc(sizeof(int *) * n);
+  NULLCHECK(mat);
+  for (i = 0; i < n; i++)
+  {
+    mat[i] = malloc(sizeof(int) * n);
+    NULLCHECK(mat[i]);
+  }
+  for (i = 0; i < n; i++)
+  {
+    for(j = 0; j < n; j++)
+      mat[i][j] = j+1;
+  }
+  return mat;
+}
+
+int main (void) {
+  DescParam params[3];
+  func_ptr f_mult_array;
+  int i;
+  int mult = 1; 
+  int **multArray = make_multArray(TAM);
+  int **iter = multArray;
+
+  params[0].tipo_val = PTR_PAR;
+  params[0].orig_val = IND;
+  params[0].valor.v_ptr = &iter;
+
+  params[1].tipo_val = INT_PAR;
+  params[1].orig_val = IND;
+  params[1].valor.v_ptr = &mult;
+
+  params[2].tipo_val = INT_PAR;
+  params[2].orig_val = PARAM;
+
+  f_mult_array = (func_ptr) cria_func(mult_array, params, 3);
+
+  printf("Antes:\n");
+  printa_multArray(multArray, TAM);
+  for (i = 0; i < TAM; i++, mult++,  iter++)
+    f_mult_array(TAM);
+  printf("\nDepois:\n");
+  printa_multArray(multArray, TAM);
+
+  libera_func(f_mult_array);
+  return 0;
+}
+
+Output 4:
+Antes:
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+1	2	3	4	5	6	7	8	9	10	
+
+
+Depois:
+1	2	3	4	5	6	7	8	9	10	
+2	4	6	8	10	12	14	16	18	20	
+3	6	9	12	15	18	21	24	27	30	
+4	8	12	16	20	24	28	32	36	40	
+5	10	15	20	25	30	35	40	45	50	
+6	12	18	24	30	36	42	48	54	60	
+7	14	21	28	35	42	49	56	63	70	
+8	16	24	32	40	48	56	64	72	80	
+9	18	27	36	45	54	63	72	81	90	
+10	20	30	40	50	60	70	80	90	100	
